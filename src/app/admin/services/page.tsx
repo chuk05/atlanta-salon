@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase'
+import Link from 'next/link'
 
 interface Service {
   id: string
@@ -8,7 +9,6 @@ interface Service {
   price: number
   category: string
   is_active: boolean
-  created_at: string
 }
 
 export default async function ServicesPage() {
@@ -52,9 +52,12 @@ export default async function ServicesPage() {
                       {service.duration} min
                     </span>
                   </div>
-                  <button className="w-full bg-pink-600 text-white py-2 rounded-lg font-semibold hover:bg-pink-700 transition duration-200">
+                  <Link 
+                    href={`/booking/select-service`}
+                    className="block w-full bg-pink-600 text-white py-2 rounded-lg font-semibold hover:bg-pink-700 transition duration-200 text-center"
+                  >
                     Book This Service
-                  </button>
+                  </Link>
                 </div>
               ))}
             </div>

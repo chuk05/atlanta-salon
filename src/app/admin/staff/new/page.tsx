@@ -21,6 +21,8 @@ export default function NewStaff() {
     setLoading(true)
 
     try {
+      console.log('Starting staff creation...')
+
       // First create the user in auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
@@ -33,11 +35,17 @@ export default function NewStaff() {
         }
       })
 
-      if (authError) throw authError
+      if (authError) {
+        console.error('Auth error:', authError)
+        throw authError
+      }
+
+      console.log('Auth created:', authData)
 
       if (authData.user) {
         // Wait a moment for the profile to be created by the trigger
-        await new Promise(resolve => setTimeout(resolve, 1000))
+        console.log('Waiting for profile creation...')
+        await new Promise(resolve => setTimeout(resolve, 2000))
 
         // Then create the staff record
         const { error: staffError } = await supabase
@@ -48,13 +56,18 @@ export default function NewStaff() {
             bio: formData.bio
           })
 
-        if (staffError) throw staffError
+        if (staffError) {
+          console.error('Staff creation error:', staffError)
+          throw staffError
+        }
 
+        console.log('Staff record created successfully')
+        alert('Staff member created successfully!')
         router.push('/admin/staff')
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating staff:', error)
-      alert('Error creating staff member. Please try again.')
+      alert(`Error creating staff member: ${error.message}`)
     } finally {
       setLoading(false)
     }

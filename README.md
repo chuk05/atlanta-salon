@@ -36,6 +36,35 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
 # Edit codes
-npm run build
+# Add all new files
+git add .
+
+# Commit changes
+git commit -m "Phase 5: Complete booking system and staff mobile app"
+
+# Push to GitHub
+git push origin main
+
 npx tsc --noEmit
+npm run build
 npm run dev
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /admin
+├ ○ /admin/services
+├ ○ /admin/staff
+├ ○ /admin/staff/assign-services
+├ ○ /admin/staff/edit
+├ ○ /admin/staff/new
+├ ○ /admin/staff/schedule
+├ ○ /booking
+├ ○ /booking/confirmation
+├ ○ /booking/select-date-time
+├ ○ /booking/select-service
+├ ○ /booking/select-staff
+├ ○ /my-appointments
+├ ○ /services
+├ ○ /staff/schedule
+└ ○ /test
