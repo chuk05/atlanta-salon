@@ -1,16 +1,6 @@
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 
-interface Service {
-  id: string
-  name: string
-  description: string | null
-  duration: number
-  price: number
-  category: string
-  is_active: boolean
-}
-
 export default async function Home() {
   const { data: services } = await supabase
     .from('services')
@@ -20,7 +10,7 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Hero Section - Fixed gradient class */}
+      {/* Hero Section */}
       <section className="bg-gradient-to-r from-pink-50 to-purple-50 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
@@ -62,7 +52,7 @@ export default async function Home() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {services?.map((service: Service) => (
+            {services?.map((service) => (
               <div key={service.id} className="bg-white rounded-lg shadow-md hover:shadow-lg transition duration-200 p-6">
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">{service.name}</h3>
                 <p className="text-gray-600 mb-4">{service.description}</p>

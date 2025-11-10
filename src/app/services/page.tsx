@@ -1,20 +1,29 @@
-import { createClient } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase'
+
+interface Service {
+  id: string
+  name: string
+  description: string | null
+  duration: number
+  price: number
+  category: string
+  is_active: boolean
+  created_at: string
+}
 
 export default async function ServicesPage() {
-  const supabase = createClient()
-  
   const { data: services } = await supabase
     .from('services')
     .select('*')
     .eq('is_active', true)
     .order('category')
 
-  const servicesByCategory = services?.reduce((acc, service) => {
+  const servicesByCategory = services?.reduce((acc: Record<string, Service[]>, service: Service) => {
     const category = service.category || 'other'
     if (!acc[category]) acc[category] = []
     acc[category].push(service)
     return acc
-  }, {} as Record<string, any[]>)
+  }, {} as Record<string, Service[]>)
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
@@ -33,7 +42,7 @@ export default async function ServicesPage() {
               {category} Services
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {categoryServices.map((service) => (
+              {(categoryServices as Service[]).map((service: Service) => (
                 <div key={service.id} className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition duration-200">
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">{service.name}</h3>
                   <p className="text-gray-600 mb-4">{service.description}</p>

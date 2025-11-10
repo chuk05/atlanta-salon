@@ -1,8 +1,6 @@
-import { createClient } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase'
 
 export default async function AdminDashboard() {
-  const supabase = createClient()
-
   // Get stats for dashboard
   const { data: services } = await supabase
     .from('services')

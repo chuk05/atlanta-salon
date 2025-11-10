@@ -36,8 +36,10 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
 # Edit codes
-Check Tables: Supabase → Table Editor → Should see all 6 tables
+http://localhost:3000 - Landing page
 
-Check Services: Click on "services" table → Should see 6 sample services
+http://localhost:3000/services - Services page
 
-Check RLS: Supabase → Authentication → Policies → Should see policies for each table
+http://localhost:3000/admin - Admin dashboard
+
+http://localhost:3000/admin/services - Services management
