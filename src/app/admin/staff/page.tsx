@@ -139,6 +139,9 @@ export default function StaffManagement() {
                   <a href={`/admin/staff/edit?id=${staffMember.id}`} className="text-pink-600 hover:text-pink-900">
                     Edit
                   </a>
+                  <a href={`/admin/staff/assign-services?id=${staffMember.id}`} className="text-blue-600 hover:text-blue-900">
+                    Assign Services
+                  </a>
                   <a href={`/admin/staff/schedule?id=${staffMember.id}`} className="text-blue-600 hover:text-blue-900">
                     Schedule
                   </a>

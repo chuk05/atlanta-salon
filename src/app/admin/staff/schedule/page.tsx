@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useSearchParams } from 'next/navigation'
 
@@ -30,7 +30,7 @@ const daysOfWeek = [
   { id: 6, name: 'Saturday' },
 ]
 
-export default function StaffSchedule() {
+function StaffScheduleContent() {
   const searchParams = useSearchParams()
   const staffId = searchParams.get('id')
   
@@ -206,5 +206,17 @@ export default function StaffSchedule() {
         </a>
       </div>
     </div>
+  )
+}
+
+export default function StaffSchedule() {
+  return (
+    <Suspense fallback={
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center py-12">Loading...</div>
+      </div>
+    }>
+      <StaffScheduleContent />
+    </Suspense>
   )
 }

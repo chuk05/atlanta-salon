@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useSearchParams, useRouter } from 'next/navigation'
 
@@ -21,7 +21,7 @@ interface Service {
   price: number
 }
 
-export default function SelectStaff() {
+function SelectStaffContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const serviceId = searchParams.get('serviceId')
@@ -49,7 +49,7 @@ export default function SelectStaff() {
       if (serviceError) throw serviceError
       setService(serviceData)
 
-      // Simpler query - get staff IDs first, then fetch staff details
+      // Get staff IDs that offer this service
       const { data: staffServices, error: staffServicesError } = await supabase
         .from('staff_services')
         .select('staff_id')
@@ -60,25 +60,39 @@ export default function SelectStaff() {
       if (staffServices && staffServices.length > 0) {
         const staffIds = staffServices.map(item => item.staff_id)
         
+        // Fetch staff members
         const { data: staffData, error: staffError } = await supabase
           .from('staff')
-          .select(`
-            *,
-            profiles!inner(full_name, email)
-          `)
+          .select('*')
           .in('id', staffIds)
           .eq('is_active', true)
 
         if (staffError) throw staffError
 
-        // Transform the data to include profile info
-        const staffWithProfiles = staffData?.map(staff => ({
-          ...staff,
-          full_name: (staff as any).profiles?.full_name,
-          email: (staff as any).profiles?.email
-        })) || []
+        // Fetch profiles separately
+        if (staffData) {
+          const userIds = staffData.map(staff => staff.user_id)
+          const { data: profilesData, error: profilesError } = await supabase
+            .from('profiles')
+            .select('id, full_name, email')
+            .in('id', userIds)
 
-        setStaff(staffWithProfiles)
+          if (profilesError) throw profilesError
+
+          // Combine staff with profile data
+          const staffWithProfiles: Staff[] = staffData.map(staff => {
+            const profile = profilesData?.find(p => p.id === staff.user_id)
+            return {
+              ...staff,
+              full_name: profile?.full_name || 'Staff Member',
+              email: profile?.email || ''
+            }
+          })
+
+          setStaff(staffWithProfiles)
+        }
+      } else {
+        setStaff([])
       }
     } catch (error) {
       console.error('Error fetching data:', error)
@@ -87,7 +101,6 @@ export default function SelectStaff() {
     }
   }
 
-  // ... rest of the component remains the same
   const handleContinue = () => {
     if (selectedStaff && serviceId) {
       router.push(`/booking/select-date-time?serviceId=${serviceId}&staffId=${selectedStaff}`)
@@ -146,7 +159,7 @@ export default function SelectStaff() {
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="font-semibold text-gray-900">
-                      {staffMember.full_name || 'Staff Member'}
+                      {staffMember.full_name}
                     </h3>
                     <p className="text-sm text-gray-600">
                       {staffMember.specialization || 'General Stylist'}
@@ -189,5 +202,19 @@ export default function SelectStaff() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function SelectStaff() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 py-12">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          Loading...
+        </div>
+      </div>
+    }>
+      <SelectStaffContent />
+    </Suspense>
   )
 }
