@@ -11,7 +11,7 @@ export async function POST(request: Request) {
       options: {
         data: {
           full_name: fullName,
-          role: 'customer' // Default role
+          role: 'customer'
         }
       }
     })

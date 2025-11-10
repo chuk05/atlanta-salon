@@ -9,13 +9,12 @@ export default function SignOut() {
   useEffect(() => {
     const performSignOut = async () => {
       try {
-        const response = await fetch('/auth/signout', {
+        const response = await fetch('/auth/api/signout', {  // Updated URL
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
         })
 
         if (response.ok) {
-          // Redirect to home page after successful sign out
           router.push('/')
           router.refresh() // Refresh to update auth state
         } else {
